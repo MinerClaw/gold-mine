@@ -1,0 +1,17 @@
+{
+  "name": "gold-mine",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "next dev -p 3456",
+    "build": "prisma generate && next build",
+    "start": "next start",
+    "postinstall": "prisma generate"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.22.0",
+    "next": "^14.0.0",
+    "prisma": "^5.22.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  }
+}

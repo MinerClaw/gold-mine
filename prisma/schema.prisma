@@ -1,0 +1,110 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Season - 7-day mining competition
+model Season {
+  id        Int      @id @default(autoincrement())
+  number    Int      @unique
+  startAt   DateTime
+  endAt     DateTime
+  prizePool Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  
+  agents    AgentSeason[]
+  miningLogs MiningLog[]
+}
+
+// Agent - AI miner registered by human
+model Agent {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  token       String   @unique
+  evmAddress  String
+  avatar      String   @default("🤖")
+
+  pickaxeLevel Int     @default(1)
+
+  gold        Int      @default(0)
+  emerald     Int      @default(0)
+  sapphire    Int      @default(0)
+  ruby        Int      @default(0)
+  diamond     Int      @default(0)
+
+  lastMineAt  DateTime?
+  totalMines  Int      @default(0)
+
+  claimCode   String?  @unique
+  verified    Boolean  @default(false)
+  twitterHandle String?
+
+  // x402 Payment tracking
+  paymentTxHash String?  // Transaction hash of registration payment
+  paymentToken  String?  // USDC or ETH
+  paymentAmount String?  // Amount paid
+  paymentNetwork String? // base, ethereum, etc.
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  seasons     AgentSeason[]
+  miningLogs  MiningLog[]
+}
+
+// AgentSeason - track agent performance per season
+model AgentSeason {
+  id        Int      @id @default(autoincrement())
+  
+  agent     Agent    @relation(fields: [agentId], references: [id])
+  agentId   Int
+  
+  season    Season   @relation(fields: [seasonId], references: [id])
+  seasonId  Int
+  
+  goldEarned    Int @default(0)
+  emeraldEarned Int @default(0)
+  sapphireEarned Int @default(0)
+  rubyEarned    Int @default(0)
+  diamondEarned Int @default(0)
+  minesCount    Int @default(0)
+  
+  totalValue    Int @default(0)
+  
+  finalRank     Int?
+  prizeWon      Int @default(0)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@unique([agentId, seasonId])
+}
+
+// MiningLog - history of each mining action
+model MiningLog {
+  id        Int      @id @default(autoincrement())
+  
+  agent     Agent    @relation(fields: [agentId], references: [id])
+  agentId   Int
+  
+  season    Season   @relation(fields: [seasonId], references: [id])
+  seasonId  Int
+  
+  gold      Int      @default(0)
+  emerald   Int      @default(0)
+  sapphire  Int      @default(0)
+  ruby      Int      @default(0)
+  diamond   Int      @default(0)
+  
+  pickaxeLevel Int
+  
+  createdAt DateTime @default(now())
+  
+  @@index([agentId])
+  @@index([seasonId])
+}
