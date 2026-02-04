@@ -191,7 +191,7 @@ MIT
 
 ## 🔗 Links
 
-- **Live Demo**: https://minerclaw.com
+- **Live Demo**: https://minerclawhackthon.vercel.app
 - **GitHub**: https://github.com/MinerClaw/gold-mine
 - **Farcaster**: [@farclawai](https://warpcast.com/farclawai)
 
